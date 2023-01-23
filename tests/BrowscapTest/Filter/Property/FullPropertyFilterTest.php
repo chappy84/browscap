@@ -18,7 +18,7 @@ class FullPropertyFilterTest extends TestCase
      * @throws InvalidArgumentException
      * @throws ExpectationFailedException
      */
-    public function testIsOutputProperty(): void
+    public function testIsOutput(): void
     {
         $propertyHolder = $this->getMockBuilder(PropertyHolder::class)
             ->disableOriginalConstructor()
@@ -30,10 +30,7 @@ class FullPropertyFilterTest extends TestCase
             ->method('isOutputProperty')
             ->willReturn(true);
 
-        $object = $this->getMockForTrait(
-            FullPropertyFilter::class,
-            [$propertyHolder],
-        );
+        $object = new FullPropertyFilter($propertyHolder);
 
         $mockWriterIni = $this->getMockBuilder(IniWriter::class)
             ->disableOriginalConstructor()
@@ -45,14 +42,14 @@ class FullPropertyFilterTest extends TestCase
             ->method('getType')
             ->willReturn(WriterInterface::TYPE_INI);
 
-        static::assertTrue($object->isOutputProperty('Comment', $mockWriterIni));
+        static::assertTrue($object->isOutput('Comment', $mockWriterIni));
     }
 
     /**
      * @throws InvalidArgumentException
      * @throws ExpectationFailedException
      */
-    public function testIsOutputPropertyModified(): void
+    public function testIsOutputModified(): void
     {
         $propertyHolder = $this->getMockBuilder(PropertyHolder::class)
             ->disableOriginalConstructor()
@@ -73,10 +70,7 @@ class FullPropertyFilterTest extends TestCase
             ->expects(static::never())
             ->method('getType');
 
-        $object = $this->getMockForTrait(
-            FullPropertyFilter::class,
-            [$propertyHolder],
-        );
-        static::assertFalse($object->isOutputProperty('Comment', $mockWriterIni));
+        $object = new FullPropertyFilter($propertyHolder);
+        static::assertFalse($object->isOutput('Comment', $mockWriterIni));
     }
 }

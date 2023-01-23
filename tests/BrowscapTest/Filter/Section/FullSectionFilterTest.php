@@ -17,12 +17,12 @@ class FullSectionFilterTest extends TestCase
      * @throws InvalidArgumentException
      * @throws ExpectationFailedException
      */
-    public function testIsOutputSectionAlways(): void
+    public function testIsOutputAlways(): void
     {
-        $object = $this->getMockForTrait(FullSectionFilter::class);
+        $object = new FullSectionFilter();
 
-        static::assertTrue($object->isOutputSection([]));
-        static::assertTrue($object->isOutputSection(['full' => false]));
-        static::assertTrue($object->isOutputSection(['full' => true]));
+        static::assertTrue($object->isOutput([]));
+        static::assertTrue($object->isOutput(['full' => false]));
+        static::assertTrue($object->isOutput(['full' => true]));
     }
 }

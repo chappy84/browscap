@@ -6,7 +6,8 @@ namespace BrowscapTest\Writer;
 
 use Browscap\Data\DataCollection;
 use Browscap\Data\Division;
-use Browscap\Filter\FilterInterface;
+use Browscap\Filter\Division\DivisionFilterInterface;
+use Browscap\Filter\Section\SectionFilterInterface;
 use Browscap\Formatter\FormatterInterface;
 use Browscap\Writer\WriterCollection;
 use Browscap\Writer\WriterInterface;
@@ -40,7 +41,7 @@ class WriterCollectionTest extends TestCase
     {
         $division = $this->createMock(Division::class);
 
-        $mockFilter = $this->createMock(FilterInterface::class);
+        $mockFilter = $this->createMock(DivisionFilterInterface::class);
         $mockFilter
             ->expects(static::once())
             ->method('isOutput')
@@ -50,7 +51,7 @@ class WriterCollectionTest extends TestCase
         $mockWriter = $this->createMock(WriterInterface::class);
         $mockWriter
             ->expects(static::once())
-            ->method('getFilter')
+            ->method('getDivisionFilter')
             ->willReturn($mockFilter);
         $mockWriter
             ->expects(static::once())
@@ -72,17 +73,17 @@ class WriterCollectionTest extends TestCase
     {
         $section = [];
 
-        $mockFilter = $this->createMock(FilterInterface::class);
+        $mockFilter = $this->createMock(SectionFilterInterface::class);
         $mockFilter
             ->expects(static::once())
-            ->method('isOutputSection')
+            ->method('isOutput')
             ->with($section)
             ->willReturn(true);
 
         $mockWriter = $this->createMock(WriterInterface::class);
         $mockWriter
             ->expects(static::once())
-            ->method('getFilter')
+            ->method('getSectionFilter')
             ->willReturn($mockFilter);
         $mockWriter
             ->expects(static::once())
@@ -163,15 +164,11 @@ class WriterCollectionTest extends TestCase
 
         $collection = $this->createMock(DataCollection::class);
 
-        $mockFilter = $this->createMock(FilterInterface::class);
+        $mockFilter = $this->createMock(DivisionFilterInterface::class);
         $mockFilter
             ->expects(static::never())
             ->method('isOutput')
             ->willReturn(true);
-        $mockFilter
-            ->expects(static::once())
-            ->method('getType')
-            ->willReturn($filterType);
 
         $mockFormatter = $this->createMock(FormatterInterface::class);
         $mockFormatter
@@ -182,12 +179,12 @@ class WriterCollectionTest extends TestCase
         $mockWriter = $this->createMock(WriterInterface::class);
         $mockWriter
             ->expects(static::once())
-            ->method('getFilter')
-            ->willReturn($mockFilter);
-        $mockWriter
-            ->expects(static::once())
             ->method('getFormatter')
             ->willReturn($mockFormatter);
+        $mockWriter
+            ->expects(static::once())
+            ->method('getFilterType')
+            ->willReturn($filterType);
         $mockWriter
             ->expects(static::once())
             ->method('renderVersion')

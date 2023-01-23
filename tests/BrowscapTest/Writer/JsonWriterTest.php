@@ -8,7 +8,9 @@ use Browscap\Data\DataCollection;
 use Browscap\Data\Division;
 use Browscap\Data\Helper\TrimProperty;
 use Browscap\Data\UserAgent;
-use Browscap\Filter\StandardFilter;
+use Browscap\Filter\Division\StandardDivisionFilter;
+use Browscap\Filter\Property\StandardPropertyFilter;
+use Browscap\Filter\Section\StandardSectionFilter;
 use Browscap\Formatter\JsonFormatter;
 use Browscap\Writer\JsonWriter;
 use Browscap\Writer\WriterInterface;
@@ -89,12 +91,43 @@ class JsonWriterTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExpectationFailedException
      */
-    public function testSetGetFilter(): void
+    public function testSetGetDivisionFilter(): void
     {
-        $mockFilter = $this->createMock(StandardFilter::class);
+        $mockFilter = $this->createMock(StandardDivisionFilter::class);
 
-        $this->object->setFilter($mockFilter);
-        static::assertSame($mockFilter, $this->object->getFilter());
+        assert($mockFilter instanceof StandardDivisionFilter);
+        $this->object->setDivisionFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getDivisionFilter());
+    }
+
+    /**
+     * tests setting and getting a filter
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     */
+    public function testSetGetPropertyFilter(): void
+    {
+        $mockFilter = $this->createMock(StandardPropertyFilter::class);
+
+        assert($mockFilter instanceof StandardPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getPropertyFilter());
+    }
+
+    /**
+     * tests setting and getting a filter
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     */
+    public function testSetGetSectionFilter(): void
+    {
+        $mockFilter = $this->createMock(StandardSectionFilter::class);
+
+        assert($mockFilter instanceof StandardSectionFilter);
+        $this->object->setSectionFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getSectionFilter());
     }
 
     /**
@@ -431,9 +464,9 @@ class JsonWriterTest extends TestCase
         assert($mockFormatter instanceof JsonFormatter);
         $this->object->setFormatter($mockFormatter);
 
-        $mockFilter = $this->getMockBuilder(StandardFilter::class)
+        $mockFilter = $this->getMockBuilder(StandardPropertyFilter::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $map2 = [
@@ -444,11 +477,11 @@ class JsonWriterTest extends TestCase
 
         $mockFilter
             ->expects(static::exactly(2))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map2);
 
-        assert($mockFilter instanceof StandardFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof StandardPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection);
@@ -557,18 +590,18 @@ class JsonWriterTest extends TestCase
             ['Parent', $this->object, true],
         ];
 
-        $mockFilter = $this->getMockBuilder(StandardFilter::class)
+        $mockFilter = $this->getMockBuilder(StandardPropertyFilter::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $mockFilter
             ->expects(static::exactly(4))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map);
 
-        assert($mockFilter instanceof StandardFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof StandardPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection, $sections);
@@ -670,18 +703,18 @@ class JsonWriterTest extends TestCase
             ['Parent', $this->object, true],
         ];
 
-        $mockFilter = $this->getMockBuilder(StandardFilter::class)
+        $mockFilter = $this->getMockBuilder(StandardPropertyFilter::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $mockFilter
             ->expects(static::exactly(4))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map);
 
-        assert($mockFilter instanceof StandardFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof StandardPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection, $sections);

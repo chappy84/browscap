@@ -17,12 +17,12 @@ class LiteSectionFilterTest extends TestCase
      * @throws InvalidArgumentException
      * @throws ExpectationFailedException
      */
-    public function testIsOutputSectionOnlyWhenLite(): void
+    public function testIsOutputOnlyWhenLite(): void
     {
-        $object = $this->getMockForTrait(LiteSectionFilter::class);
+        $object = new LiteSectionFilter();
 
-        static::assertFalse($object->isOutputSection([]));
-        static::assertFalse($object->isOutputSection(['lite' => false]));
-        static::assertTrue($object->isOutputSection(['lite' => true]));
+        static::assertFalse($object->isOutput([]));
+        static::assertFalse($object->isOutput(['lite' => false]));
+        static::assertTrue($object->isOutput(['lite' => true]));
     }
 }

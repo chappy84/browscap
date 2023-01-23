@@ -20,7 +20,7 @@ class LiteDivisionFilterTest extends TestCase
      */
     public function testIsOutput(): void
     {
-        $object = $this->getMockForTrait(LiteDivisionFilter::class);
+        $object = new LiteDivisionFilter();
 
         $division = $this->getMockBuilder(DataDivision::class)
             ->disableOriginalConstructor()

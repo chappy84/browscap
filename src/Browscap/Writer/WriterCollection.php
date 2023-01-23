@@ -44,7 +44,7 @@ class WriterCollection
     public function setSilent(Division $division): void
     {
         foreach ($this->writers as $writer) {
-            $writer->setSilent(! $writer->getFilter()->isOutput($division));
+            $writer->setSilent(! $writer->getDivisionFilter()->isOutput($division));
         }
     }
 
@@ -56,7 +56,7 @@ class WriterCollection
     public function setSilentSection(array $section): void
     {
         foreach ($this->writers as $writer) {
-            $writer->setSilent(! $writer->getFilter()->isOutputSection($section));
+            $writer->setSilent(! $writer->getSectionFilter()->isOutput($section));
         }
     }
 
@@ -111,7 +111,7 @@ class WriterCollection
                     'version' => $version,
                     'released' => $generationDate->format('r'),
                     'format' => $writer->getFormatter()->getType(),
-                    'type' => $writer->getFilter()->getType(),
+                    'type' => $writer->getFilterType(),
                 ],
             );
         }

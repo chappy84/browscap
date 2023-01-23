@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Browscap\Writer\Factory;
 
 use Browscap\Data\PropertyHolder;
-use Browscap\Filter\FullFilter;
+use Browscap\Filter\Division\FullDivisionFilter;
+use Browscap\Filter\FilterTypes;
+use Browscap\Filter\Property\FullPropertyFilter;
+use Browscap\Filter\Section\FullSectionFilter;
 use Browscap\Formatter\PhpFormatter;
 use Browscap\Writer\IniWriter;
 use Browscap\Writer\WriterCollection;
@@ -27,11 +30,16 @@ class FullPhpWriterFactory
             $file = $buildFolder . '/full_php_browscap.ini';
         }
 
-        $fullFilter    = new FullFilter($propertyHolder);
-        $fullPhpWriter = new IniWriter($file, $logger);
-        $formatter     = new PhpFormatter($propertyHolder);
+        $divisionFilter = new FullDivisionFilter();
+        $propertyFilter = new FullPropertyFilter($propertyHolder);
+        $sectionFilter  = new FullSectionFilter();
+        $fullPhpWriter  = new IniWriter($file, $logger);
+        $formatter      = new PhpFormatter($propertyHolder);
         $fullPhpWriter->setFormatter($formatter);
-        $fullPhpWriter->setFilter($fullFilter);
+        $fullPhpWriter->setDivisionFilter($divisionFilter);
+        $fullPhpWriter->setSectionFilter($sectionFilter);
+        $fullPhpWriter->setPropertyFilter($propertyFilter);
+        $fullPhpWriter->setFilterType(FilterTypes::TYPE_FULL);
 
         $writerCollection->addWriter($fullPhpWriter);
 

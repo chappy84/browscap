@@ -12,7 +12,7 @@ use function in_array;
 /**
  * this filter is responsible to select properties and sections for the "full" version of the browscap files
  */
-trait FieldPropertyFilter
+class FieldPropertyFilter implements PropertyFilterInterface
 {
     /**
      * @param array<string> $fields
@@ -28,7 +28,7 @@ trait FieldPropertyFilter
      *
      * @throws void
      */
-    public function isOutputProperty(string $property, WriterInterface $writer): bool
+    public function isOutput(string $property, WriterInterface $writer): bool
     {
         if (! $this->propertyHolder->isOutputProperty($property, $writer)) {
             return false;

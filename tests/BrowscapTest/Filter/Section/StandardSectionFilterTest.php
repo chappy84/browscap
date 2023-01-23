@@ -17,12 +17,12 @@ class StandardSectionFilterTest extends TestCase
      * @throws InvalidArgumentException
      * @throws ExpectationFailedException
      */
-    public function testIsOutputSectionAlways(): void
+    public function testIsOutputAlways(): void
     {
-        $object = $this->getMockForTrait(StandardSectionFilter::class);
+        $object = new StandardSectionFilter();
 
-        static::assertTrue($object->isOutputSection([]));
-        static::assertFalse($object->isOutputSection(['standard' => false]));
-        static::assertTrue($object->isOutputSection(['standard' => true]));
+        static::assertTrue($object->isOutput([]));
+        static::assertFalse($object->isOutput(['standard' => false]));
+        static::assertTrue($object->isOutput(['standard' => true]));
     }
 }

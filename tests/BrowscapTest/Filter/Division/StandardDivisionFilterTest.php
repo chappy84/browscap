@@ -20,7 +20,7 @@ class StandardDivisionFilterTest extends TestCase
      */
     public function testIsOutputTrue(): void
     {
-        $object = $this->getMockForTrait(StandardDivisionFilter::class);
+        $object = new StandardDivisionFilter();
 
         $division = $this->getMockBuilder(DataDivision::class)
             ->disableOriginalConstructor()
@@ -43,7 +43,7 @@ class StandardDivisionFilterTest extends TestCase
      */
     public function testIsOutputFalse(): void
     {
-        $object = $this->getMockForTrait(StandardDivisionFilter::class);
+        $object = new StandardDivisionFilter();
 
         $division = $this->getMockBuilder(DataDivision::class)
             ->disableOriginalConstructor()

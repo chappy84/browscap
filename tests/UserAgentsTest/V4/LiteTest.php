@@ -7,8 +7,13 @@ namespace UserAgentsTest\V4;
 use Browscap\Coverage\Processor;
 use Browscap\Data\Factory\DataCollectionFactory;
 use Browscap\Data\PropertyHolder;
-use Browscap\Filter\FilterInterface;
-use Browscap\Filter\LiteFilter;
+use Browscap\Filter\Division\DivisionFilterInterface;
+use Browscap\Filter\Division\LiteDivisionFilter;
+use Browscap\Filter\FilterTypes;
+use Browscap\Filter\Property\LitePropertyFilter;
+use Browscap\Filter\Property\PropertyFilterInterface;
+use Browscap\Filter\Section\LiteSectionFilter;
+use Browscap\Filter\Section\SectionFilterInterface;
 use Browscap\Formatter\PhpFormatter;
 use Browscap\Generator\BuildGenerator;
 use Browscap\Helper\IteratorHelper;
@@ -50,7 +55,11 @@ class LiteTest extends TestCase
     /** @var array<string> */
     private static array $coveredPatterns = [];
 
-    private static FilterInterface $filter;
+    private static DivisionFilterInterface $divisionFilter;
+
+    private static PropertyFilterInterface $propertyFilter;
+
+    private static SectionFilterInterface $sectionFilter;
 
     private static WriterInterface $writer;
 
@@ -110,11 +119,16 @@ class LiteTest extends TestCase
 
             $writerCollection     = new WriterCollection();
             self::$propertyHolder = new PropertyHolder();
-            self::$filter         = new LiteFilter(self::$propertyHolder);
+            self::$divisionFilter = new LiteDivisionFilter();
+            self::$propertyFilter = new LitePropertyFilter(self::$propertyHolder);
+            self::$sectionFilter  = new LiteSectionFilter();
             self::$writer         = new IniWriter($buildFolder . '/lite_php_browscap.ini', $logger);
             $formatter            = new PhpFormatter(self::$propertyHolder);
             self::$writer->setFormatter($formatter);
-            self::$writer->setFilter(self::$filter);
+            self::$writer->setDivisionFilter(self::$divisionFilter);
+            self::$writer->setPropertyFilter(self::$propertyFilter);
+            self::$writer->setSectionFilter(self::$sectionFilter);
+            self::$writer->setFilterType(FilterTypes::TYPE_LITE);
             $writerCollection->addWriter(self::$writer);
 
             $dataCollectionFactory = new DataCollectionFactory($logger);
@@ -214,7 +228,7 @@ class LiteTest extends TestCase
         }
 
         foreach ($expectedProperties as $propName => $propValue) {
-            if (! self::$filter->isOutputProperty($propName, self::$writer)) {
+            if (! self::$propertyFilter->isOutput($propName, self::$writer)) {
                 continue;
             }
 

@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Browscap\Writer\Factory;
 
 use Browscap\Data\PropertyHolder;
-use Browscap\Filter\CustomFilter;
+use Browscap\Filter\Division\StandardDivisionFilter;
+use Browscap\Filter\FilterTypes;
+use Browscap\Filter\Property\FieldPropertyFilter;
+use Browscap\Filter\Section\StandardSectionFilter;
 use Browscap\Formatter;
 use Browscap\Formatter\FormatterInterface;
 use Browscap\Writer;
@@ -59,7 +62,9 @@ class CustomWriterFactory
             }
         }
 
-        $filter = new CustomFilter($propertyHolder, $fields);
+        $divisionFilter = new StandardDivisionFilter();
+        $propertyFilter = new FieldPropertyFilter($propertyHolder, $fields);
+        $sectionFilter  = new StandardSectionFilter();
 
         switch ($format) {
             case FormatterInterface::TYPE_ASP:
@@ -91,7 +96,10 @@ class CustomWriterFactory
         }
 
         $writer->setFormatter($formatter);
-        $writer->setFilter($filter);
+        $writer->setDivisionFilter($divisionFilter);
+        $writer->setSectionFilter($sectionFilter);
+        $writer->setPropertyFilter($propertyFilter);
+        $writer->setFilterType(FilterTypes::TYPE_CUSTOM);
 
         $writerCollection->addWriter($writer);
 

@@ -10,7 +10,7 @@ use Browscap\Writer\WriterInterface;
 /**
  * this filter is responsible to select properties for the "standard" version of the browscap files
  */
-trait StandardPropertyFilter
+class StandardPropertyFilter implements PropertyFilterInterface
 {
     /** @throws void */
     public function __construct(private PropertyHolder $propertyHolder)
@@ -22,7 +22,7 @@ trait StandardPropertyFilter
      *
      * @throws void
      */
-    public function isOutputProperty(string $property, WriterInterface $writer): bool
+    public function isOutput(string $property, WriterInterface $writer): bool
     {
         if (! $this->propertyHolder->isOutputProperty($property, $writer)) {
             return false;

@@ -20,7 +20,7 @@ class FullDivisionFilterTest extends TestCase
      */
     public function testIsOutput(): void
     {
-        $object = $this->getMockForTrait(FullDivisionFilter::class);
+        $object = new FullDivisionFilter();
 
         $division = $this->createMock(DataDivision::class);
 

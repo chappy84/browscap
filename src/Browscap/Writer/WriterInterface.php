@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Browscap\Writer;
 
 use Browscap\Data\DataCollection;
-use Browscap\Filter\FilterInterface;
+use Browscap\Filter\Division\DivisionFilterInterface;
+use Browscap\Filter\Property\PropertyFilterInterface;
+use Browscap\Filter\Section\SectionFilterInterface;
 use Browscap\Formatter\FormatterInterface;
 use InvalidArgumentException;
 use JsonException;
@@ -128,8 +130,26 @@ interface WriterInterface
     public function getFormatter(): FormatterInterface;
 
     /** @throws void */
-    public function setFilter(FilterInterface $filter): void;
+    public function setDivisionFilter(DivisionFilterInterface $filter): void;
 
     /** @throws void */
-    public function getFilter(): FilterInterface;
+    public function getDivisionFilter(): DivisionFilterInterface;
+
+    /** @throws void */
+    public function setSectionFilter(SectionFilterInterface $filter): void;
+
+    /** @throws void */
+    public function getSectionFilter(): SectionFilterInterface;
+
+    /** @throws void */
+    public function setPropertyFilter(PropertyFilterInterface $filter): void;
+
+    /** @throws void */
+    public function getPropertyFilter(): PropertyFilterInterface;
+
+    /** @throws void */
+    public function setFilterType(string $filterType): void;
+
+    /** @throws void */
+    public function getFilterType(): string;
 }

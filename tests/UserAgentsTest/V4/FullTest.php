@@ -7,8 +7,13 @@ namespace UserAgentsTest\V4;
 use Browscap\Coverage\Processor;
 use Browscap\Data\Factory\DataCollectionFactory;
 use Browscap\Data\PropertyHolder;
-use Browscap\Filter\FilterInterface;
-use Browscap\Filter\FullFilter;
+use Browscap\Filter\Division\DivisionFilterInterface;
+use Browscap\Filter\Division\FullDivisionFilter;
+use Browscap\Filter\FilterTypes;
+use Browscap\Filter\Property\FullPropertyFilter;
+use Browscap\Filter\Property\PropertyFilterInterface;
+use Browscap\Filter\Section\FullSectionFilter;
+use Browscap\Filter\Section\SectionFilterInterface;
 use Browscap\Formatter\PhpFormatter;
 use Browscap\Generator\BuildGenerator;
 use Browscap\Helper\IteratorHelper;
@@ -50,7 +55,11 @@ class FullTest extends TestCase
     /** @var array<string> */
     private static array $coveredPatterns = [];
 
-    private static FilterInterface $filter;
+    private static DivisionFilterInterface $divisionFilter;
+
+    private static PropertyFilterInterface $propertyFilter;
+
+    private static SectionFilterInterface $sectionFilter;
 
     private static WriterInterface $writer;
 
@@ -109,12 +118,17 @@ class FullTest extends TestCase
             };
 
             self::$propertyHolder = new PropertyHolder();
-            self::$filter         = new FullFilter(self::$propertyHolder);
+            self::$divisionFilter = new FullDivisionFilter();
+            self::$propertyFilter = new FullPropertyFilter(self::$propertyHolder);
+            self::$sectionFilter  = new FullSectionFilter();
             self::$writer         = new IniWriter($buildFolder . '/full_php_browscap.ini', $logger);
 
             $formatter = new PhpFormatter(self::$propertyHolder);
             self::$writer->setFormatter($formatter);
-            self::$writer->setFilter(self::$filter);
+            self::$writer->setDivisionFilter(self::$divisionFilter);
+            self::$writer->setPropertyFilter(self::$propertyFilter);
+            self::$writer->setSectionFilter(self::$sectionFilter);
+            self::$writer->setFilterType(FilterTypes::TYPE_FULL);
 
             $writerCollection = new WriterCollection();
             $writerCollection->addWriter(self::$writer);
@@ -216,7 +230,7 @@ class FullTest extends TestCase
         }
 
         foreach ($expectedProperties as $propName => $propValue) {
-            if (! self::$filter->isOutputProperty($propName, self::$writer)) {
+            if (! self::$propertyFilter->isOutput($propName, self::$writer)) {
                 continue;
             }
 

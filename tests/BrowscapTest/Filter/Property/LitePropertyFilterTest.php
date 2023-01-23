@@ -15,7 +15,7 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 class LitePropertyFilterTest extends TestCase
 {
     /**
-     * Data Provider for the test testIsOutputProperty
+     * Data Provider for the test testIsOutput
      *
      * @return array<int, array<int, bool|string>>
      *
@@ -75,7 +75,7 @@ class LitePropertyFilterTest extends TestCase
      *
      * @dataProvider outputPropertiesDataProvider
      */
-    public function testIsOutputProperty(string $propertyName, bool $isExtra): void
+    public function testIsOutput(string $propertyName, bool $isExtra): void
     {
         $propertyHolder = $this->getMockBuilder(PropertyHolder::class)
             ->disableOriginalConstructor()
@@ -87,10 +87,7 @@ class LitePropertyFilterTest extends TestCase
             ->method('isOutputProperty')
             ->willReturn(true);
 
-        $object = $this->getMockForTrait(
-            LitePropertyFilter::class,
-            [$propertyHolder],
-        );
+        $object = new LitePropertyFilter($propertyHolder);
 
         $mockWriterIni = $this->getMockBuilder(IniWriter::class)
             ->disableOriginalConstructor()
@@ -102,7 +99,7 @@ class LitePropertyFilterTest extends TestCase
             ->method('getType')
             ->willReturn(WriterInterface::TYPE_INI);
 
-        $actualValue = $object->isOutputProperty($propertyName, $mockWriterIni);
+        $actualValue = $object->isOutput($propertyName, $mockWriterIni);
         static::assertSame($isExtra, $actualValue);
     }
 
@@ -112,7 +109,7 @@ class LitePropertyFilterTest extends TestCase
      *
      * @dataProvider outputPropertiesDataProvider
      */
-    public function testIsOutputPropertyWithPropertyHolder(string $propertyName): void
+    public function testIsOutputWithPropertyHolder(string $propertyName): void
     {
         $propertyHolder = $this->getMockBuilder(PropertyHolder::class)
             ->disableOriginalConstructor()
@@ -133,10 +130,7 @@ class LitePropertyFilterTest extends TestCase
             ->expects(static::never())
             ->method('getType');
 
-        $object = $this->getMockForTrait(
-            LitePropertyFilter::class,
-            [$propertyHolder],
-        );
-        static::assertFalse($object->isOutputProperty($propertyName, $mockWriterIni));
+        $object = new LitePropertyFilter($propertyHolder);
+        static::assertFalse($object->isOutput($propertyName, $mockWriterIni));
     }
 }

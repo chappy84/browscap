@@ -7,8 +7,13 @@ namespace UserAgentsTest\V4;
 use Browscap\Coverage\Processor;
 use Browscap\Data\Factory\DataCollectionFactory;
 use Browscap\Data\PropertyHolder;
-use Browscap\Filter\FilterInterface;
-use Browscap\Filter\StandardFilter;
+use Browscap\Filter\Division\DivisionFilterInterface;
+use Browscap\Filter\Division\StandardDivisionFilter;
+use Browscap\Filter\FilterTypes;
+use Browscap\Filter\Property\PropertyFilterInterface;
+use Browscap\Filter\Property\StandardPropertyFilter;
+use Browscap\Filter\Section\SectionFilterInterface;
+use Browscap\Filter\Section\StandardSectionFilter;
 use Browscap\Formatter\PhpFormatter;
 use Browscap\Generator\BuildGenerator;
 use Browscap\Helper\IteratorHelper;
@@ -50,7 +55,11 @@ class StandardTest extends TestCase
     /** @var array<string> */
     private static array $coveredPatterns = [];
 
-    private static FilterInterface $filter;
+    private static DivisionFilterInterface $divisionFilter;
+
+    private static PropertyFilterInterface $propertyFilter;
+
+    private static SectionFilterInterface $sectionFilter;
 
     private static WriterInterface $writer;
 
@@ -110,11 +119,16 @@ class StandardTest extends TestCase
 
             $writerCollection     = new WriterCollection();
             self::$propertyHolder = new PropertyHolder();
-            self::$filter         = new StandardFilter(self::$propertyHolder);
+            self::$divisionFilter = new StandardDivisionFilter();
+            self::$propertyFilter = new StandardPropertyFilter(self::$propertyHolder);
+            self::$sectionFilter  = new StandardSectionFilter();
             self::$writer         = new IniWriter($buildFolder . '/php_browscap.ini', $logger);
             $formatter            = new PhpFormatter(self::$propertyHolder);
             self::$writer->setFormatter($formatter);
-            self::$writer->setFilter(self::$filter);
+            self::$writer->setDivisionFilter(self::$divisionFilter);
+            self::$writer->setPropertyFilter(self::$propertyFilter);
+            self::$writer->setSectionFilter(self::$sectionFilter);
+            self::$writer->setFilterType(FilterTypes::TYPE_STANDARD);
             $writerCollection->addWriter(self::$writer);
 
             $dataCollectionFactory = new DataCollectionFactory($logger);
@@ -214,7 +228,7 @@ class StandardTest extends TestCase
         }
 
         foreach ($expectedProperties as $propName => $propValue) {
-            if (! self::$filter->isOutputProperty($propName, self::$writer)) {
+            if (! self::$propertyFilter->isOutput($propName, self::$writer)) {
                 continue;
             }
 

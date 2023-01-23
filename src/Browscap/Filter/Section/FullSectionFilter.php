@@ -7,7 +7,7 @@ namespace Browscap\Filter\Section;
 /**
  * this filter is responsible to select properties and sections for the "full" version of the browscap files
  */
-trait FullSectionFilter
+class FullSectionFilter implements SectionFilterInterface
 {
     /**
      * checks if a section should be in the output
@@ -16,7 +16,7 @@ trait FullSectionFilter
      *
      * @throws void
      */
-    public function isOutputSection(array $section): bool
+    public function isOutput(array $section): bool
     {
         return true;
     }

@@ -6,7 +6,9 @@ namespace Browscap\Writer;
 
 use Browscap\Data\DataCollection;
 use Browscap\Data\UserAgent;
-use Browscap\Filter\FilterInterface;
+use Browscap\Filter\Division\DivisionFilterInterface;
+use Browscap\Filter\Property\PropertyFilterInterface;
+use Browscap\Filter\Section\SectionFilterInterface;
 use Browscap\Formatter\FormatterInterface;
 use Exception;
 use InvalidArgumentException;
@@ -35,7 +37,13 @@ class CsvWriter implements WriterInterface
 
     private FormatterInterface $formatter;
 
-    private FilterInterface $filter;
+    private DivisionFilterInterface $divisionFilter;
+
+    private SectionFilterInterface $sectionFilter;
+
+    private PropertyFilterInterface $propertyFilter;
+
+    private string $filterType;
 
     private bool $silent = false;
 
@@ -87,16 +95,60 @@ class CsvWriter implements WriterInterface
     }
 
     /** @throws void */
-    public function setFilter(FilterInterface $filter): void
+    public function setDivisionFilter(DivisionFilterInterface $divisionFilter): void
     {
-        $this->filter           = $filter;
+        $this->divisionFilter = $divisionFilter;
+        $this->resetProperties();
+    }
+
+    /** @throws void */
+    public function getDivisionFilter(): DivisionFilterInterface
+    {
+        return $this->divisionFilter;
+    }
+
+    /** @throws void */
+    public function setSectionFilter(SectionFilterInterface $sectionFilter): void
+    {
+        $this->sectionFilter = $sectionFilter;
+        $this->resetProperties();
+    }
+
+    /** @throws void */
+    public function getSectionFilter(): SectionFilterInterface
+    {
+        return $this->sectionFilter;
+    }
+
+    /** @throws void */
+    public function setPropertyFilter(PropertyFilterInterface $propertyFilter): void
+    {
+        $this->propertyFilter = $propertyFilter;
+        $this->resetProperties();
+    }
+
+    /** @throws void */
+    public function getPropertyFilter(): PropertyFilterInterface
+    {
+        return $this->propertyFilter;
+    }
+
+    /** @throws void */
+    private function resetProperties(): void
+    {
         $this->outputProperties = [];
     }
 
     /** @throws void */
-    public function getFilter(): FilterInterface
+    public function setFilterType(string $filterType): void
     {
-        return $this->filter;
+        $this->filterType = $filterType;
+    }
+
+    /** @throws void */
+    public function getFilterType(): string
+    {
+        return $this->filterType;
     }
 
     /** @throws void */
@@ -197,7 +249,7 @@ class CsvWriter implements WriterInterface
 
         foreach ($properties as $property) {
             if (! isset($this->outputProperties[$property])) {
-                $this->outputProperties[$property] = $this->filter->isOutputProperty((string) $property, $this);
+                $this->outputProperties[$property] = $this->propertyFilter->isOutput((string) $property, $this);
             }
 
             if (! $this->outputProperties[$property]) {
@@ -262,7 +314,7 @@ class CsvWriter implements WriterInterface
 
         foreach ($properties as $property) {
             if (! isset($this->outputProperties[$property])) {
-                $this->outputProperties[$property] = $this->filter->isOutputProperty($property, $this);
+                $this->outputProperties[$property] = $this->propertyFilter->isOutput($property, $this);
             }
 
             if (! $this->outputProperties[$property]) {

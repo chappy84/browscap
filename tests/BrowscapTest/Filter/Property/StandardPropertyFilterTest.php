@@ -15,7 +15,7 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 class StandardPropertyFilterTest extends TestCase
 {
     /**
-     * Data Provider for the test testIsOutputProperty
+     * Data Provider for the test testIsOutput
      *
      * @return array<int, array<int, bool|string>>
      *
@@ -74,7 +74,7 @@ class StandardPropertyFilterTest extends TestCase
      *
      * @dataProvider outputPropertiesDataProvider
      */
-    public function testIsOutputProperty(string $propertyName, bool $isExtra): void
+    public function testIsOutput(string $propertyName, bool $isExtra): void
     {
         $propertyHolder = $this->getMockBuilder(PropertyHolder::class)
             ->disableOriginalConstructor()
@@ -86,10 +86,7 @@ class StandardPropertyFilterTest extends TestCase
             ->method('isOutputProperty')
             ->willReturn($isExtra);
 
-        $object = $this->getMockForTrait(
-            StandardPropertyFilter::class,
-            [$propertyHolder],
-        );
+        $object = new StandardPropertyFilter($propertyHolder);
 
         $mockWriterIni = $this->getMockBuilder(IniWriter::class)
             ->disableOriginalConstructor()
@@ -101,7 +98,7 @@ class StandardPropertyFilterTest extends TestCase
             ->method('getType')
             ->willReturn(WriterInterface::TYPE_INI);
 
-        $actualValue = $object->isOutputProperty($propertyName, $mockWriterIni);
+        $actualValue = $object->isOutput($propertyName, $mockWriterIni);
         static::assertSame($isExtra, $actualValue);
     }
 
@@ -111,7 +108,7 @@ class StandardPropertyFilterTest extends TestCase
      *
      * @dataProvider outputPropertiesDataProvider
      */
-    public function testIsOutputPropertyWithPropertyHolder(string $propertyName): void
+    public function testIsOutputWithPropertyHolder(string $propertyName): void
     {
         $propertyHolder = $this->getMockBuilder(PropertyHolder::class)
             ->disableOriginalConstructor()
@@ -132,10 +129,7 @@ class StandardPropertyFilterTest extends TestCase
             ->expects(static::never())
             ->method('getType');
 
-        $object = $this->getMockForTrait(
-            StandardPropertyFilter::class,
-            [$propertyHolder],
-        );
-        static::assertFalse($object->isOutputProperty($propertyName, $mockWriterIni));
+        $object = new StandardPropertyFilter($propertyHolder);
+        static::assertFalse($object->isOutput($propertyName, $mockWriterIni));
     }
 }

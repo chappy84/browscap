@@ -9,7 +9,7 @@ use Browscap\Data\Division as DataDivision;
 /**
  * this filter is responsible to select divisions for the "lite" version of the browscap files
  */
-trait LiteDivisionFilter
+class LiteDivisionFilter implements DivisionFilterInterface
 {
     /**
      * checks if a division should be in the output

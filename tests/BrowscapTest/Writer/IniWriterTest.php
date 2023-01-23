@@ -9,7 +9,9 @@ use Browscap\Data\Division;
 use Browscap\Data\Helper\TrimProperty;
 use Browscap\Data\PropertyHolder;
 use Browscap\Data\UserAgent;
-use Browscap\Filter\FullFilter;
+use Browscap\Filter\Division\FullDivisionFilter;
+use Browscap\Filter\Property\FullPropertyFilter;
+use Browscap\Filter\Section\FullSectionFilter;
 use Browscap\Formatter\PhpFormatter;
 use Browscap\Writer\IniWriter;
 use Browscap\Writer\WriterInterface;
@@ -91,13 +93,43 @@ class IniWriterTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExpectationFailedException
      */
-    public function testSetGetFilter(): void
+    public function testSetGetDivisionFilter(): void
     {
-        $mockFilter = $this->createMock(FullFilter::class);
+        $mockFilter = $this->createMock(FullDivisionFilter::class);
 
-        assert($mockFilter instanceof FullFilter);
-        $this->object->setFilter($mockFilter);
-        static::assertSame($mockFilter, $this->object->getFilter());
+        assert($mockFilter instanceof FullDivisionFilter);
+        $this->object->setDivisionFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getDivisionFilter());
+    }
+
+    /**
+     * tests setting and getting a filter
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     */
+    public function testSetGetPropertyFilter(): void
+    {
+        $mockFilter = $this->createMock(FullPropertyFilter::class);
+
+        assert($mockFilter instanceof FullPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getPropertyFilter());
+    }
+
+    /**
+     * tests setting and getting a filter
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     */
+    public function testSetGetSectionFilter(): void
+    {
+        $mockFilter = $this->createMock(FullSectionFilter::class);
+
+        assert($mockFilter instanceof FullSectionFilter);
+        $this->object->setSectionFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getSectionFilter());
     }
 
     /**
@@ -410,9 +442,9 @@ class IniWriterTest extends TestCase
         assert($mockFormatter instanceof PhpFormatter);
         $this->object->setFormatter($mockFormatter);
 
-        $mockFilter = $this->getMockBuilder(FullFilter::class)
+        $mockFilter = $this->getMockBuilder(FullPropertyFilter::class)
             ->setConstructorArgs([$propertyHolder])
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $map2 = [
@@ -423,11 +455,11 @@ class IniWriterTest extends TestCase
 
         $mockFilter
             ->expects(static::exactly(2))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map2);
 
-        assert($mockFilter instanceof FullFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof FullPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection);
@@ -537,18 +569,18 @@ class IniWriterTest extends TestCase
             ['Parent', $this->object, true],
         ];
 
-        $mockFilter = $this->getMockBuilder(FullFilter::class)
+        $mockFilter = $this->getMockBuilder(FullPropertyFilter::class)
             ->setConstructorArgs([$propertyHolder])
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $mockFilter
             ->expects(static::exactly(4))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map);
 
-        assert($mockFilter instanceof FullFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof FullPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection, $sections);
@@ -652,18 +684,18 @@ class IniWriterTest extends TestCase
             ['Parent', $this->object, true],
         ];
 
-        $mockFilter = $this->getMockBuilder(FullFilter::class)
+        $mockFilter = $this->getMockBuilder(FullPropertyFilter::class)
             ->setConstructorArgs([$propertyHolder])
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $mockFilter
             ->expects(static::exactly(4))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map);
 
-        assert($mockFilter instanceof FullFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof FullPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection, $sections);

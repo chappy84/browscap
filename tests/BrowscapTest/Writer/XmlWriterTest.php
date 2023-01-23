@@ -8,8 +8,10 @@ use Browscap\Data\DataCollection;
 use Browscap\Data\Division;
 use Browscap\Data\PropertyHolder;
 use Browscap\Data\UserAgent;
-use Browscap\Filter\FullFilter;
-use Browscap\Filter\StandardFilter;
+use Browscap\Filter\Division\FullDivisionFilter;
+use Browscap\Filter\Property\FullPropertyFilter;
+use Browscap\Filter\Property\StandardPropertyFilter;
+use Browscap\Filter\Section\FullSectionFilter;
 use Browscap\Formatter\XmlFormatter;
 use Browscap\Writer\WriterInterface;
 use Browscap\Writer\XmlWriter;
@@ -88,12 +90,43 @@ class XmlWriterTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExpectationFailedException
      */
-    public function testSetGetFilter(): void
+    public function testSetGetDivisionFilter(): void
     {
-        $mockFilter = $this->createMock(FullFilter::class);
+        $mockFilter = $this->createMock(FullDivisionFilter::class);
 
-        $this->object->setFilter($mockFilter);
-        static::assertSame($mockFilter, $this->object->getFilter());
+        assert($mockFilter instanceof FullDivisionFilter);
+        $this->object->setDivisionFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getDivisionFilter());
+    }
+
+    /**
+     * tests setting and getting a filter
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     */
+    public function testSetGetPropertyFilter(): void
+    {
+        $mockFilter = $this->createMock(FullPropertyFilter::class);
+
+        assert($mockFilter instanceof FullPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getPropertyFilter());
+    }
+
+    /**
+     * tests setting and getting a filter
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     */
+    public function testSetGetSectionFilter(): void
+    {
+        $mockFilter = $this->createMock(FullSectionFilter::class);
+
+        assert($mockFilter instanceof FullSectionFilter);
+        $this->object->setSectionFilter($mockFilter);
+        static::assertSame($mockFilter, $this->object->getSectionFilter());
     }
 
     /**
@@ -447,9 +480,9 @@ class XmlWriterTest extends TestCase
         assert($mockFormatter instanceof XmlFormatter);
         $this->object->setFormatter($mockFormatter);
 
-        $mockFilter = $this->getMockBuilder(FullFilter::class)
+        $mockFilter = $this->getMockBuilder(FullPropertyFilter::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $map2 = [
@@ -460,11 +493,11 @@ class XmlWriterTest extends TestCase
 
         $mockFilter
             ->expects(static::exactly(2))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map2);
 
-        assert($mockFilter instanceof FullFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof FullPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection);
@@ -559,18 +592,18 @@ class XmlWriterTest extends TestCase
             ['Parent', $this->object, true],
         ];
 
-        $mockFilter = $this->getMockBuilder(StandardFilter::class)
+        $mockFilter = $this->getMockBuilder(StandardPropertyFilter::class)
             ->setConstructorArgs([$propertyHolder])
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $mockFilter
             ->expects(static::exactly(4))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map);
 
-        assert($mockFilter instanceof StandardFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof StandardPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection, $sections);
@@ -659,18 +692,18 @@ class XmlWriterTest extends TestCase
             ['Parent', $this->object, true],
         ];
 
-        $mockFilter = $this->getMockBuilder(StandardFilter::class)
+        $mockFilter = $this->getMockBuilder(StandardPropertyFilter::class)
             ->setConstructorArgs([$propertyHolder])
-            ->onlyMethods(['isOutputProperty'])
+            ->onlyMethods(['isOutput'])
             ->getMock();
 
         $mockFilter
             ->expects(static::exactly(4))
-            ->method('isOutputProperty')
+            ->method('isOutput')
             ->willReturnMap($map);
 
-        assert($mockFilter instanceof StandardFilter);
-        $this->object->setFilter($mockFilter);
+        assert($mockFilter instanceof StandardPropertyFilter);
+        $this->object->setPropertyFilter($mockFilter);
 
         assert($collection instanceof DataCollection);
         $this->object->renderSectionBody($section, $collection, $sections);
